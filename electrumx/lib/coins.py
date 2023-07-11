@@ -103,7 +103,7 @@ class Coin:
 
         If header sizes change at some point, this is the only code
         that needs updating.'''
-        return height * cls.BASIC_HEADER_SIZE
+        raise NotImplementedError()
 
     @classmethod
     def static_header_len(cls, height):
@@ -184,8 +184,7 @@ class Coin:
 
     @classmethod
     def header_hash(cls, header):
-        '''Given a header return hash'''
-        return double_sha256(header)
+        raise NotImplementedError()
 
     @classmethod
     def header_prevhash(cls, header):
@@ -214,91 +213,61 @@ class Coin:
         return Decimal(value) / cls.VALUE_PER_COIN
 
 
-class Ravencoin(Coin):
-    NAME = "Ravencoin"
-    SHORTNAME = "RVN"
+class Neurai(Coin):
+    NAME = "Neurai"
+    SHORTNAME = "XNA"
     NET = "mainnet"
     XPUB_VERBYTES = bytes.fromhex("0488B21E")
     XPRV_VERBYTES = bytes.fromhex("0488ADE4")
-    P2PKH_VERBYTE = bytes.fromhex("3C")
-    P2SH_VERBYTES = [bytes.fromhex("7A")]
-    GENESIS_HASH = ('0000006b444bc2f2ffe627be9d9e7e7a'
-                    '0730000870ef6eb6da46c8eae389df90')
+    P2PKH_VERBYTE = bytes([53])
+    P2SH_VERBYTES = [bytes([117])]
+    GENESIS_HASH = ('00000044d33c0c0ba019be5c02497304'
+                    '24a69cb4c222153322f68c6104484806')
     DEFAULT_MAX_SEND = 10_000_000
-    X16RV2_ACTIVATION_TIME = 1569945600   # algo switch to x16rv2 at this timestamp
-    KAWPOW_ACTIVATION_TIME = 1588788000  # kawpow algo activation time
-    KAWPOW_ACTIVATION_HEIGHT = 1219736
     KAWPOW_HEADER_SIZE = 120
     
-    CHAIN_SIZE = 29_655_304_862
-    CHAIN_SIZE_HEIGHT = 2_873_312
-    AVG_BLOCK_SIZE = 12_681
+    CHAIN_SIZE = 0
+    CHAIN_SIZE_HEIGHT = 0
+    AVG_BLOCK_SIZE = 0
     
-    RPC_PORT = 8766
+    RPC_PORT = 19001
     REORG_LIMIT = 60
-    PEERS = [
-        'rvn4lyfe.com t s',
-        'rvn-dashboard.com s',
-        'aq7vuqykup2voklcrpqljf6jnjkzrouowsjfrmybdou5kdhrpr6sjjid.onion t s',
-    ]
+    PEERS = []
 
     @classmethod
     def static_header_offset(cls, height):
         '''Given a header height return its offset in the headers file.'''
-        if cls.KAWPOW_ACTIVATION_HEIGHT < 0 or height < cls.KAWPOW_ACTIVATION_HEIGHT:
-            result = height * cls.BASIC_HEADER_SIZE
-        else:  # RVN block header size increased with kawpow fork
-            baseoffset = cls.KAWPOW_ACTIVATION_HEIGHT * cls.BASIC_HEADER_SIZE
-            result = baseoffset + ((height - cls.KAWPOW_ACTIVATION_HEIGHT) * cls.KAWPOW_HEADER_SIZE)
-        return result
-
+        return height * cls.KAWPOW_HEADER_SIZE
+        
     @classmethod
     def header_hash(cls, header):
         '''Given a header return the hash.'''
-        timestamp = util.unpack_le_uint32_from(header, 68)[0]
-        assert cls.KAWPOW_ACTIVATION_TIME > 0
-
         def reverse_bytes(data):
             b = bytearray(data)
             b.reverse()
             return bytes(b)
 
-        if timestamp >= cls.KAWPOW_ACTIVATION_TIME:
-            import kawpow
-            nNonce64 = util.unpack_le_uint64_from(header, 80)[0]  # uint64_t
-            mix_hash = reverse_bytes(header[88:120])  # uint256
+        import kawpow
+        nNonce64 = util.unpack_le_uint64_from(header, 80)[0]  # uint64_t
+        mix_hash = reverse_bytes(header[88:120])  # uint256
 
-            header_hash = reverse_bytes(double_sha256(header[:80]))
+        header_hash = reverse_bytes(double_sha256(header[:80]))
 
-            final_hash = reverse_bytes(kawpow.light_verify(header_hash, mix_hash, nNonce64))
-            return final_hash
+        final_hash = reverse_bytes(kawpow.light_verify(header_hash, mix_hash, nNonce64))
+        return final_hash
 
-        elif timestamp >= cls.X16RV2_ACTIVATION_TIME:
-            import x16rv2_hash
-            return x16rv2_hash.getPoWHash(header)
-        else:
-            import x16r_hash
-            return x16r_hash.getPoWHash(header)
-
-
-class RavencoinTestnet(Ravencoin):
+class NeuraiTestnet(Neurai):
     NET = "testnet"
     XPUB_VERBYTES = bytes.fromhex("043587CF")
     XPRV_VERBYTES = bytes.fromhex("04358394")
-    P2PKH_VERBYTE = bytes.fromhex("6F")
-    P2SH_VERBYTES = [bytes.fromhex("C4")]
+    P2PKH_VERBYTE = bytes([127])
+    P2SH_VERBYTES = [bytes([196])]
     WIF_BYTE = bytes.fromhex("EF")
-    GENESIS_HASH = ('000000ecfc5e6324a079542221d00e10'
-                    '362bdc894d56500c414060eea8a3ad5a')
-    X16RV2_ACTIVATION_TIME = 1567533600
-    KAWPOW_ACTIVATION_HEIGHT = 231544
-    KAWPOW_ACTIVATION_TIME = 1585159200
-    
-    CHAIN_SIZE = 567_294_883
-    CHAIN_SIZE_HEIGHT = 1_048_377
-    AVG_BLOCK_SIZE = 400
+    GENESIS_HASH = ('0000006af8b8297448605b0283473ec7'
+                    '12f9768f81cc7eae6269b875dee3b0cf')
+    CHAIN_SIZE = 0
+    CHAIN_SIZE_HEIGHT = 0
+    AVG_BLOCK_SIZE = 0
 
-    RPC_PORT = 18766
-    PEERS = [
-        "rvn4lyfe.com t50011 s50012",
-    ]
+    RPC_PORT = 19101
+    PEERS = []
