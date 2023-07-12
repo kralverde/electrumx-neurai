@@ -229,13 +229,13 @@ class Neurai(Coin):
     KAWPOW_ACTIVATION_HEIGHT = 1
     KAWPOW_ACTIVATION_TIMESTAMP = 1681720841
 
-    CHAIN_SIZE = 0
-    CHAIN_SIZE_HEIGHT = 0
-    AVG_BLOCK_SIZE = 0
+    CHAIN_SIZE = 141_694_056
+    CHAIN_SIZE_HEIGHT = 122172
+    AVG_BLOCK_SIZE = 1160
     
     RPC_PORT = 19001
     REORG_LIMIT = 60
-    PEER_DEFAULT_PORTS = {'t': '19101', 's': '19102'}
+    PEER_DEFAULT_PORTS = {'t': '19011', 's': '19012'}
     PEERS = [
         "electrumx3.neurai.org t s",
         "electrumx2.neurai.org t s",
