@@ -22,16 +22,21 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN python3 -m pip install --upgrade pip
 
-ADD --chown=electrumx https://github.com/NeuraiProject/electrumx-neurai/archive/master.tar.gz .
-RUN tar zxvf *.tar.gz
-RUN rm *.tar.gz
+#ADD --chown=electrumx https://github.com/Electrum-RVN-SIG/electrumx-ravencoin/archive/master.tar.gz .
+#RUN tar zxvf *.tar.gz
+#RUN rm *.tar.gz
 
-WORKDIR /home/electrumx/electrumx-neurai-main
+RUN mkdir -p work
+
+WORKDIR /home/electrumx/work
+
+ADD --chown=electrumx . ./
+
 RUN python3 -m pip install -r requirements.txt
 RUN python3 setup.py install
 WORKDIR /home/electrumx
 
-RUN rm -r electrumx-neurai-main
+RUN rm -r work
 
 ENV SERVICES="ssl://:50002,tcp://:50001,rpc://:8000"
 ENV COIN=Neurai
@@ -70,7 +75,7 @@ CMD if [ -d "$DB_DIRECTORY/ssl_cert/" ]; then \
         openssl x509 -req -days 1825 -in server.csr -signkey server.key -out server.crt; \
     fi && electrumx_server
 
-# build it with eg.: `docker build -t electrumx-neurai .`
+# build it with eg.: `docker build -t electrumx .`
 # run it with eg.:
-# `docker run -d --net=host -v /home/electrumx/db/:/db -e DAEMON_URL="http://youruser:yourpass@localhost:8766" -e REPORT_SERVICES=tcp://example.com:50001 electrumx-neurai`
+# `docker run -d --net=host -v /home/electrumx/db/:/db -e DAEMON_URL="http://youruser:yourpass@localhost:8766" -e REPORT_SERVICES=tcp://example.com:50001 electrumx`
 # for a proper clean shutdown, send TERM signal to the running container eg.: `docker kill --signal="TERM" CONTAINER_ID`

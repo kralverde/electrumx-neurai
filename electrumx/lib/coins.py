@@ -43,6 +43,9 @@ import electrumx.lib.tx as lib_tx
 from electrumx.server import daemon
 from electrumx.server.session import ElectrumX
 
+import x16r_hash
+import kawpow
+
 Block = namedtuple("Block", "raw header transactions")
 
 
@@ -93,9 +96,7 @@ class Coin:
 
     @classmethod
     def prefetch_limit(cls, height):
-        if height <= 650_000:
-            return 100
-        return 10
+        return 100
 
     @classmethod
     def static_header_offset(cls, height):
@@ -224,8 +225,11 @@ class Neurai(Coin):
     GENESIS_HASH = ('00000044d33c0c0ba019be5c02497304'
                     '24a69cb4c222153322f68c6104484806')
     DEFAULT_MAX_SEND = 10_000_000
-    KAWPOW_HEADER_SIZE = 120
     
+    KAWPOW_HEADER_SIZE = 120
+    KAWPOW_ACTIVATION_HEIGHT = 1
+    KAWPOW_ACTIVATION_TIMESTAMP = 1681720841
+
     CHAIN_SIZE = 0
     CHAIN_SIZE_HEIGHT = 0
     AVG_BLOCK_SIZE = 0
@@ -237,17 +241,25 @@ class Neurai(Coin):
     @classmethod
     def static_header_offset(cls, height):
         '''Given a header height return its offset in the headers file.'''
-        return height * cls.KAWPOW_HEADER_SIZE
+        if height == 0:
+            return 0
+        if height == 1:
+            return cls.BASIC_HEADER_SIZE
+        return cls.BASIC_HEADER_SIZE + (height - 1) * cls.KAWPOW_HEADER_SIZE
         
     @classmethod
     def header_hash(cls, header):
         '''Given a header return the hash.'''
+        timestamp = util.unpack_le_uint32_from(header, 68)[0]
+
+        if timestamp < cls.KAWPOW_ACTIVATION_TIMESTAMP:
+            return x16r_hash.getPoWHash(header)
+
         def reverse_bytes(data):
             b = bytearray(data)
             b.reverse()
             return bytes(b)
 
-        import kawpow
         nNonce64 = util.unpack_le_uint64_from(header, 80)[0]  # uint64_t
         mix_hash = reverse_bytes(header[88:120])  # uint256
 
