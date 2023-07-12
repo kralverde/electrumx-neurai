@@ -33,7 +33,7 @@ WORKDIR /home/electrumx
 
 RUN rm -r electrumx-neurai-main
 
-ENV SERVICES="ssl://:19102,tcp://:19101,rpc://:8000"
+ENV SERVICES="ssl://:19012,tcp://:19011,rpc://:8000"
 ENV COIN=Neurai
 ENV DB_DIRECTORY=/db
 ENV DAEMON_URL="http://username:password@hostname:port/"
@@ -53,8 +53,8 @@ ENV SSL_KEYFILE="${DB_DIRECTORY}/ssl_cert/server.key"
 # env REPORT_SERVICES = ssl://rvn4lyfe.com:50002,tcp://rvn4lyfe.com:50001
 
 EXPOSE 8000
-EXPOSE 19101
-EXPOSE 19102
+EXPOSE 19011
+EXPOSE 19012
 
 VOLUME /db
 
