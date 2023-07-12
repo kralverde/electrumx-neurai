@@ -74,7 +74,6 @@ class Coin:
                     '4ff763ae46a2a6c172b3f1b60a8ce26f')
     GENESIS_ACTIVATION = 100_000_000
     # Peer discovery
-    PEER_DEFAULT_PORTS = {'t': '50001', 's': '50002'}
     PEERS = []
 
     ESTIMATEFEE_MODES = (None, 'CONSERVATIVE', 'ECONOMICAL')
@@ -236,7 +235,12 @@ class Neurai(Coin):
     
     RPC_PORT = 19001
     REORG_LIMIT = 60
-    PEERS = []
+    PEER_DEFAULT_PORTS = {'t': '19101', 's': '19102'}
+    PEERS = [
+        "electrumx3.neurai.org t s",
+        "electrumx2.neurai.org t s",
+        "electrumx1.neurai.org t s",
+    ]
 
     @classmethod
     def static_header_offset(cls, height):
@@ -282,4 +286,7 @@ class NeuraiTestnet(Neurai):
     AVG_BLOCK_SIZE = 0
 
     RPC_PORT = 19101
-    PEERS = []
+    PEER_DEFAULT_PORTS = {'t': '19111', 's': '19112'}
+    PEERS = [
+        "electrumx-testnet.neurai.org t s"
+    ]
