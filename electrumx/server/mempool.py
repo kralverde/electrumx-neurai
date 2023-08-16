@@ -46,11 +46,11 @@ class OPPushDataGeneric:
 
 SCRIPTPUBKEY_TEMPLATE_P2PK = [OPPushDataGeneric(lambda x: x in (33, 65)), OpCodes.OP_CHECKSIG]
 # Marks an address as valid for restricted assets via qualifier or restricted itself.
-ASSET_NULL_TEMPLATE = [OpCodes.OP_RVN_ASSET, OPPushDataGeneric(lambda x: x == 20), OPPushDataGeneric()]
+ASSET_NULL_TEMPLATE = [OpCodes.OP_XNA_ASSET, OPPushDataGeneric(lambda x: x == 20), OPPushDataGeneric()]
 # Used with creating restricted assets. Dictates the qualifier assets associated.
-ASSET_NULL_VERIFIER_TEMPLATE = [OpCodes.OP_RVN_ASSET, OpCodes.OP_RESERVED, OPPushDataGeneric()]
+ASSET_NULL_VERIFIER_TEMPLATE = [OpCodes.OP_XNA_ASSET, OpCodes.OP_RESERVED, OPPushDataGeneric()]
 # Stop all movements of a restricted asset.
-ASSET_GLOBAL_RESTRICTION_TEMPLATE = [OpCodes.OP_RVN_ASSET, OpCodes.OP_RESERVED, OpCodes.OP_RESERVED,
+ASSET_GLOBAL_RESTRICTION_TEMPLATE = [OpCodes.OP_XNA_ASSET, OpCodes.OP_RESERVED, OpCodes.OP_RESERVED,
                                      OPPushDataGeneric()]
 
 
@@ -583,17 +583,17 @@ class MemPool(object):
                     op_ptr = -1
                     for i in range(len(ops)):
                         op = ops[i][0]  # The OpCode
-                        if op == OpCodes.OP_RVN_ASSET:
+                        if op == OpCodes.OP_XNA_ASSET:
                             op_ptr = i
                             break
 
                     if op_ptr > 0:
-                        # This script has OP_RVN_ASSET. Use everything before this for the script hash.
+                        # This script has OP_XNA_ASSET. Use everything before this for the script hash.
                         # Get the raw script bytes ending ptr from the previous opcode.
                         script_hash_end = ops[op_ptr - 1][1]
                         hashX = to_hashX(txout.pk_script[:script_hash_end])
                     else:
-                        # There is no OP_RVN_ASSET. Hash as-is.
+                        # There is no OP_XNA_ASSET. Hash as-is.
                         hashX = to_hashX(txout.pk_script)
 
                     # Best effort for standard asset portions

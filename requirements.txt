@@ -4,5 +4,6 @@ plyvel==1.5.0
 aiorpcx==0.22.1
 kawpow==0.9.4.4
 uvloop==0.17.0
+websockets==11.0.3
 
 x16r_hash @ git+https://github.com/brian112358/x16r_hash@d79211ee8b5d86a9709caefded79f318a1d9f3a8
