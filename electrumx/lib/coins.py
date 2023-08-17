@@ -237,6 +237,7 @@ class Neurai(Coin):
     REORG_LIMIT = 60
     PEER_DEFAULT_PORTS = {'t': '19011', 's': '19012'}
     PEERS = [
+        "electrumx4.neurai.org t s",
         "electrumx3.neurai.org t s",
         "electrumx2.neurai.org t s",
         "electrumx1.neurai.org t s",
