@@ -1021,8 +1021,8 @@ class ElectrumX(SessionBase):
     '''A TCP server that handles incoming Electrum connections.'''
 
     PROTOCOL_MIN = (1, 4)
-    PROTOCOL_MAX = (1, 11)
-    PROTOCOL_BAD = ((1, 9),)
+    PROTOCOL_MAX = (1, 4)
+    PROTOCOL_BAD = ()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2026,10 +2026,7 @@ class ElectrumX(SessionBase):
             'blockchain.scripthash.unsubscribe': self.scripthash_unsubscribe,
             'blockchain.asset.subscribe': self.asset_subscribe,
             'blockchain.asset.unsubscribe': self.asset_unsubscribe,
-            'blockchain.asset.check_tag': self.is_qualified,
-            'blockchain.asset.all_tags': self.qualifications_for_h160,
             'blockchain.asset.is_frozen': self.is_restricted_frozen,
-            'blockchain.asset.validator_string': self.get_restricted_string,
             'blockchain.asset.restricted_associations': self.lookup_qualifier_associations,
             'blockchain.asset.broadcasts': self.get_messages,
             'blockchain.asset.get_assets_with_prefix': self.get_assets_with_prefix,

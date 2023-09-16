@@ -66,11 +66,11 @@ class OPPushDataGeneric:
 
 
 # Marks an address as valid for restricted assets via qualifier or restricted itself.
-ASSET_NULL_TEMPLATE = [OpCodes.OP_RVN_ASSET, OPPushDataGeneric(lambda x: x == 20), OPPushDataGeneric()]
+ASSET_NULL_TEMPLATE = [OpCodes.OP_ASSET, OPPushDataGeneric(lambda x: x == 20), OPPushDataGeneric()]
 # Used with creating restricted assets. Dictates the qualifier assets associated.
-ASSET_NULL_VERIFIER_TEMPLATE = [OpCodes.OP_RVN_ASSET, OpCodes.OP_RESERVED, OPPushDataGeneric()]
+ASSET_NULL_VERIFIER_TEMPLATE = [OpCodes.OP_ASSET, OpCodes.OP_RESERVED, OPPushDataGeneric()]
 # Stop all movements of a restricted asset.
-ASSET_GLOBAL_RESTRICTION_TEMPLATE = [OpCodes.OP_RVN_ASSET, OpCodes.OP_RESERVED, OpCodes.OP_RESERVED,
+ASSET_GLOBAL_RESTRICTION_TEMPLATE = [OpCodes.OP_ASSET, OpCodes.OP_RESERVED, OpCodes.OP_RESERVED,
                                      OPPushDataGeneric()]
 
 
@@ -852,7 +852,7 @@ class BlockProcessor:
                     op_ptr = -1
                     for i in range(len(ops)):
                         op = ops[i][0]  # The OpCode
-                        if op == OpCodes.OP_RVN_ASSET:
+                        if op == OpCodes.OP_ASSET:
                             op_ptr = i
                             break
                         if op == -1:
@@ -1151,7 +1151,7 @@ class BlockProcessor:
                     # https://www.youtube.com/watch?v=iZlpsneDGBQ
 
                     if 0 < op_ptr < len(ops):
-                        assert ops[op_ptr][0] == OpCodes.OP_RVN_ASSET  # Sanity check
+                        assert ops[op_ptr][0] == OpCodes.OP_ASSET  # Sanity check
                         try:
                             next_op = ops[op_ptr + 1]
                             if next_op[0] == -1:
