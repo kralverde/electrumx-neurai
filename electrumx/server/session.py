@@ -1020,7 +1020,7 @@ def check_h160(h160):
 class ElectrumX(SessionBase):
     '''A TCP server that handles incoming Electrum connections.'''
 
-    PROTOCOL_MIN = (1, 4)
+    PROTOCOL_MIN = (1, 0)
     PROTOCOL_MAX = (1, 4)
     PROTOCOL_BAD = ()
 
